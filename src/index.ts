@@ -1,18 +1,3 @@
-import { EasyApp } from './common/app';
-import {User} from './test/user'
-// @EasyApp({mongoUrl: 'mongodb://localhost/aya'})
-
-@EasyApp({
-  databaseType:"mongodb",
-  databaseHost:"localhost",
-  databaseName:"test",
-  databasePort: 27017,
-  synchronizeDatabase: true,
-  modelsDir: [User]
-})
-class Application {
-}
-
-
-
-
+export { EasyApp, AppConfig } from './common/app'
+export { Routes } from './controllers/base-controller'
+export { EasyController } from './models/model'
