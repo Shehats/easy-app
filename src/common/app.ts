@@ -1,5 +1,5 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
-import { Router } from "express";
+import { Router, Response, Request, NextFunction } from "express";
 import * as express from 'express'
 import * as compression  from "compression";  // compresses requests
 import * as ExpressSession from "express-session";
@@ -8,6 +8,7 @@ import * as lusca from "lusca";
 import * as dotenv  from "dotenv";
 import { createConnection, ConnectionOptions, Connection } from "typeorm";
 import { Routes, Controller } from '../controllers/base-controller';
+import { Observable, from, merge } from 'rxjs';
 
 export interface AppConfig {
   port?: number,
@@ -52,6 +53,37 @@ export class App {
         this.app.get("env")
         );
       console.log("  Press CTRL-C to stop\n");
+    })
+    this.app.get('/search?:q=:search', (req: Request, res: Response, next: NextFunction) => {
+      let connection: Promise<Connection> = <Promise<Connection>>is('Connection')
+      let params: any = (<any>{})
+      (<string>req.params.search)
+      .split('+').forEach(x => {
+        let cur = x.split('=')
+        params[cur[0]] = cur[1]
+      })
+      let q = req.params.q
+      if (!q) {
+        let queries = (<any[]> is('Models'))
+        from(connection.then(conn => queries.map(x => conn.getRepository(x).find(params))))
+        .subscribe(
+          data => {
+            let retVal = []
+            data.forEach(x => retVal.concat(x))
+            res.status(200).json(retVal)
+          },
+          err => res.status(500).send(err),
+          () => next()
+          )
+      }
+      else {
+        from(connection.then(conn => conn.getRepository(is(q+'_MODEL')).find(params)))
+        .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next()
+          )
+      }
     })
   }
 

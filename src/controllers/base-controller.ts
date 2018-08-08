@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction, Express, Router } from "express";
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
-import { Connection } from "typeorm";
+import { Connection, FindConditions } from "typeorm";
 import { Observable, from } from 'rxjs';
 import { constructType } from '../util/helpers'
 
@@ -10,7 +10,8 @@ export interface Routes {
   getByKeyUrl?: string,
   postUrl?: string,
   putUrl?: string,
-  deleteUrl?: string
+  deleteUrl?: string,
+  queryUrl?: string
 }
 
 export class Controller<T> {
@@ -34,7 +35,33 @@ export class Controller<T> {
         () => next())
     })
 
-    app.post(`/${routes.getByIdUrl}`, (req: Request, res: Response, next: NextFunction) => {
+    app.get(`/${routes.getByKeyUrl}/:key/:value`, (req: Request, res: Response, next: NextFunction) => {
+      let params = {}
+      params[req.params.key] = req.params.value
+      from(connection.then(conn => conn.getRepository(type).find(params)))
+      .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next())
+
+    })
+
+    app.get(`/${routes.queryUrl}=:elem`, (req: Request, res: Response, next: NextFunction) => {
+      let params: any = (<any>{})
+
+      (<string>req.params.search)
+      .split('+').forEach(x => {
+        let cur = x.split('=')
+        params[cur[0]] = cur[1]
+      })
+      from(connection.then(conn => conn.getRepository(type).find(params)))
+      .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next())
+    })
+
+    app.post(`/${routes.postUrl}`, (req: Request, res: Response, next: NextFunction) => {
       from(connection.then(conn => conn.getRepository(type).save(<any>constructType(req.body, type))))
         .subscribe(
           data => res.status(200).json(data),
@@ -42,7 +69,7 @@ export class Controller<T> {
           () => next())
     })
 
-    app.put(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
+    app.put(`/${routes.putUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
       from(connection.then(conn => conn.getRepository(type).update(req.params.id, <any>constructType(req.body, type))))
       .subscribe(
           data => res.status(200).json(data),
@@ -50,7 +77,7 @@ export class Controller<T> {
           () => next())
     })
 
-    app.delete(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
+    app.delete(`/${routes.deleteUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
       from(connection.then(conn => conn.getRepository(type).delete(req.params.id)))
       .subscribe(
           data => res.status(200).json(data),

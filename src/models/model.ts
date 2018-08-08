@@ -17,6 +17,10 @@ export const EasyController = <T extends {new(...args:any[]):{}}>(routes?: Route
                       deleteUrl: target.name.toLowerCase()
                     }
   // init controllers
+  let queries = <any[]>((is('Models'))? is('Models'): [])
+  queries.push(target)
+  Easily('Models', queries)
+  Easily(target.name.toLowerCase()+'_MODEL',target)
   let app: Express = <Express> is('App')
   if (!app){
     let queue = <any[]>is('Queue')
