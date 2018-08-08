@@ -1,15 +1,11 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
-import { Document, Schema, Model, model} from "mongoose";
 import { Routes, Controller } from '../controllers/base-controller';
 import { Express, Router } from "express";
+import { Connection } from "typeorm";
 
-export const EasyModel = <T extends {new(...args:any[]):{}}>(routes?: Routes) => function(target: T): any {
-	const targetDocument = class extends target implements Document {}
-  const targetSchema = new Schema(target, {versionKey: false})
-  const targetModel = model(target.name, )
-  Easily(target.name+'_MODEL', targetModel)
-  Easily(target.name+'_DOCUMENT', targetDocument)
-  const app = <Express> is('App')
+
+export const EasyController = <T extends {new(...args:any[]):{}}>(routes?: Routes) => function(target: T): any {
+  let connection: Promise<Connection> = <Promise<Connection>>is('Connection')
   const targetRoutes: Routes = (routes) 
                     ? routes
                     : {
@@ -20,7 +16,18 @@ export const EasyModel = <T extends {new(...args:any[]):{}}>(routes?: Routes) =>
                       putUrl: target.name.toLowerCase(),
                       deleteUrl: target.name.toLowerCase()
                     }
-
-  const targetController = new Controller(app, targetRoutes, targetModel, target)
-  Easily(target.name+'_Controller', targetController)
+  // init controllers
+  let app: Express = <Express> is('App')
+  if (!app){
+    let queue = <any[]>is('Queue')
+    if (!queue)
+      Easily('Queue',[{routes: targetRoutes, target: target}])
+    else {
+      queue.push({routes: targetRoutes, target: target})
+      Easily('Queue', queue)
+    }
+  } else {
+    const targetController = new Controller(app, targetRoutes, connection, target)
+    Easily(target.name+'_Controller', targetController)
+  }
 }

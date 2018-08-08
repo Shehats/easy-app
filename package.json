@@ -17,12 +17,15 @@
   },
   "homepage": "https://github.com/Shehats/easy-app#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "dotenv": "^6.0.0",
     "easy-injectionjs": "^0.1.42",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "lusca": "^1.6.1",
+    "mongodb": "^3.1.1",
+    "rxjs": "^6.2.2",
     "typeorm": "^0.2.7"
   },
   "devDependencies": {

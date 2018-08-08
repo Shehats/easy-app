@@ -1,18 +1,18 @@
 import { EasyApp } from './common/app';
-import { EasyModel } from './models/model'
+import {User} from './test/user'
+// @EasyApp({mongoUrl: 'mongodb://localhost/aya'})
 
-@EasyApp({mongoUrl: 'mongodb://localhost/aya'})
+@EasyApp({
+  databaseType:"mongodb",
+  databaseHost:"localhost",
+  databaseName:"test",
+  databasePort: 27017,
+  synchronizeDatabase: true,
+  modelsDir: [User]
+})
 class Application {
 }
 
-new Application()
 
-@EasyModel()
-class Cur {
-  email: string
-  password: string
-  passwordResetToken: string
-  passwordResetExpires: Date
-  facebook: string
-}
+
 

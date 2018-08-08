@@ -1,52 +1,61 @@
-import { Document, Schema, Model, model} from "mongoose";
 import { Response, Request, NextFunction, Express, Router } from "express";
+import { EasySingleton, is, Easily } from 'easy-injectionjs';
+import { Connection } from "typeorm";
+import { Observable, from } from 'rxjs';
+import { constructType } from '../util/helpers'
 
 export interface Routes {
-  getUrl?: String,
-  getByIdUrl?: String,
-  getByKeyUrl?: String,
-  postUrl?: String,
-  putUrl?: String,
-  deleteUrl?: String
+  getUrl?: string,
+  getByIdUrl?: string,
+  getByKeyUrl?: string,
+  postUrl?: string,
+  putUrl?: string,
+  deleteUrl?: string
 }
 
-export class Controller {
-  constructor (app: Router, 
+export class Controller<T> {
+  constructor (app: Express, 
     routes: Routes,
-    model_: Model,
-    type: (new(...args:any[]) => {})) {
-    app.get(`/${routes.getUrl}`, (req: Request, res: Response) => {
-      model_.find((err, arr) => (err)
-        ? res.status(404).send(err)
-        : res.status(200).json(arr))
+    connection: Promise<Connection>,
+    type: (new(...args:any[])=>T)) {
+    app.get(`/${routes.getUrl}`, (req: Request, res: Response, next: NextFunction) => {
+      from(connection.then(conn => conn.getRepository(type).find()))
+      .subscribe(
+        data => res.status(200).json(data),
+        err => res.status(500).send(err),
+        () => next())
     })
 
-    app.get(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response) => {
-      model_.findById(req.params.id, (err, data) => (err)
-        ? res.status(404).send(err)
-        : res.status(200).json(data))
+    app.get(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
+      from(connection.then(conn => conn.getRepository(type).findOne(req.params.id)))
+      .subscribe(
+        data => res.status(200).json(data),
+        err => res.status(500).send(err),
+        () => next())
     })
 
-    app.post(`/${routes.getByIdUrl}`, (req: Request, res: Response) => {
-      const target = new model_(req.body)
-      target.save(err => (err) 
-        ? res.status(403).json(err)
-        : res.status(200).json(req.body))
+    app.post(`/${routes.getByIdUrl}`, (req: Request, res: Response, next: NextFunction) => {
+      from(connection.then(conn => conn.getRepository(type).save(<any>constructType(req.body, type))))
+        .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next())
     })
 
-    app.put(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response) => {
-      model_.findByIdAndUpdate(req.params.id, 
-        req.body, 
-        {new: true}, 
-        (err, data) => (err)
-        ? res.status(403).json(err)
-        : res.status(200).json(data))
+    app.put(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
+      from(connection.then(conn => conn.getRepository(type).update(req.params.id, <any>constructType(req.body, type))))
+      .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next())
     })
 
-    app.delete(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response) => {
-      model_.findByIdAndRemove(req.params.id, (err, data) => (err)
-        ? res.status(500).json(err)
-        : res.status(200).json({'message': 'Item has been successfully deleted.'}))
+    app.delete(`/${routes.getByIdUrl}/:id`, (req: Request, res: Response, next: NextFunction) => {
+      from(connection.then(conn => conn.getRepository(type).delete(req.params.id)))
+      .subscribe(
+          data => res.status(200).json(data),
+          err => res.status(500).send(err),
+          () => next())
     })
   }
 }

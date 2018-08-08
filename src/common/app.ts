@@ -1,5 +1,4 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
-import { EasyModel } from '../models/model';
 import { Router } from "express";
 import * as express from 'express'
 import * as compression  from "compression";  // compresses requests
@@ -7,19 +6,22 @@ import * as ExpressSession from "express-session";
 import * as bodyParser  from "body-parser";
 import * as lusca from "lusca";
 import * as dotenv  from "dotenv";
-import { createConnection, ConnectionOptions} from "typeorm";
+import { createConnection, ConnectionOptions, Connection } from "typeorm";
+import { Routes, Controller } from '../controllers/base-controller';
 
 export interface AppConfig {
   port?: number,
   appSecret?: string,
+  distDir?: string,
   databaseType?: string,
+  databaseUrl?: string,
   databaseHost?: string,
   databasePort?: number,
   databaseUsername?: string,
   databasePassword?: string,
   databaseName?: string,
   synchronizeDatabase?: boolean,
-  modelsDir?: string[]
+  modelsDir?: any[]
 }
 
 export class App {
@@ -64,8 +66,11 @@ export class App {
 
 export const EasyApp = <T extends {new(...args:any[]):{}}>(
   config: AppConfig) => function(target: T): any {
-  config.modelsDir.map(x => __dirname+x+'/*.js')
-  let options: ConnectionOptions = {
+  let app = new App(config)
+  Easily('App', app.App)
+  Easily('Router', app.Router)
+  let getConnection = async () => await createConnection((<ConnectionOptions>{
+    url: config.databaseUrl,
     type: config.databaseType,
     host: config.databaseHost,
     port: config.databasePort,
@@ -74,15 +79,14 @@ export const EasyApp = <T extends {new(...args:any[]):{}}>(
     database: config.databaseName,
     entities: config.modelsDir,
     synchronize: config.synchronizeDatabase
-  }
-  let getConnection = async (opts: ConnectionOptions) => await createConnection(opts)
-  return class extends target {
-    constructor (...args: any[]) {
-      super();
-      let app = new App(config)
-      Easily('App', app.App)
-      Easily('Router', app.Router)
-      
-    }
+  }))
+  let connection = (<Promise<Connection>>getConnection())
+  Easily('Connection', connection)
+  let queue = <any[]>is('Queue')
+  if (queue) {
+    queue.forEach(x => {
+      Easily(target.name+'_Controller', new Controller(app.App, x['routes'], connection, x['target']))
+    })
   }
 }
+
