@@ -2,17 +2,7 @@ import { Response, Request, NextFunction, Express, Router } from "express";
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { Connection, FindConditions } from "typeorm";
 import { Observable, from } from 'rxjs';
-import { constructType } from '../util/helpers'
-
-export interface Routes {
-  getUrl?: string,
-  getByIdUrl?: string,
-  getByKeyUrl?: string,
-  postUrl?: string,
-  putUrl?: string,
-  deleteUrl?: string,
-  queryUrl?: string
-}
+import { constructType, Routes } from '../core';
 
 export class Controller<T> {
   constructor (app: Express, 

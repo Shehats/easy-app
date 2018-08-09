@@ -1,8 +1,8 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
-import { Routes, Controller } from '../controllers/base-controller';
+import { Controller } from './base-controller';
+import { Routes } from '../core';
 import { Express, Router } from "express";
 import { Connection } from "typeorm";
-
 
 export const EasyController = <T extends {new(...args:any[]):{}}>(routes?: Routes) => function(target: T): any {
   let connection: Promise<Connection> = <Promise<Connection>>is('Connection')

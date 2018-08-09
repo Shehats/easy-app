@@ -7,23 +7,10 @@ import * as bodyParser  from "body-parser";
 import * as lusca from "lusca";
 import * as dotenv  from "dotenv";
 import { createConnection, ConnectionOptions, Connection } from "typeorm";
-import { Routes, Controller } from '../controllers/base-controller';
+import { Controller } from '../controllers';
 import { Observable, from, merge } from 'rxjs';
-
-export interface AppConfig {
-  port?: number,
-  appSecret?: string,
-  distDir?: string,
-  databaseType?: string,
-  databaseUrl?: string,
-  databaseHost?: string,
-  databasePort?: number,
-  databaseUsername?: string,
-  databasePassword?: string,
-  databaseName?: string,
-  synchronizeDatabase?: boolean,
-  modelsDir?: any[]
-}
+import { Routes } from '../core';
+import { AppConfig } from './app-config';
 
 export class App {
   private router: Router
@@ -94,31 +81,3 @@ export class App {
     return this.router
   }
 }
-
-
-export const EasyApp = <T extends {new(...args:any[]):{}}>(
-  config: AppConfig) => function(target: T): any {
-  let app = new App(config)
-  Easily('App', app.App)
-  Easily('Router', app.Router)
-  let getConnection = async () => await createConnection((<ConnectionOptions>{
-    url: config.databaseUrl,
-    type: config.databaseType,
-    host: config.databaseHost,
-    port: config.databasePort,
-    username: config.databaseUsername,
-    password: config.databasePassword,
-    database: config.databaseName,
-    entities: config.modelsDir,
-    synchronize: config.synchronizeDatabase
-  }))
-  let connection = (<Promise<Connection>>getConnection())
-  Easily('Connection', connection)
-  let queue = <any[]>is('Queue')
-  if (queue) {
-    queue.forEach(x => {
-      Easily(target.name+'_Controller', new Controller(app.App, x['routes'], connection, x['target']))
-    })
-  }
-}
-
