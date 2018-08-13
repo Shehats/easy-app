@@ -17,23 +17,29 @@
   },
   "homepage": "https://github.com/Shehats/easy-app#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
+    "crypto": "^1.0.1",
     "dotenv": "^6.0.0",
     "easy-injectionjs": "^0.1.42",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
+    "lodash": "^4.17.10",
     "lusca": "^1.6.1",
     "mongodb": "^3.1.1",
+    "passport": "^0.4.0",
     "properties-reader": "0.0.16",
     "rxjs": "^6.2.2",
     "typeorm": "^0.2.7"
   },
   "devDependencies": {
+    "@types/bcrypt-nodejs": "0.0.30",
     "@types/compression": "0.0.36",
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.16.0",
     "@types/express-session": "^1.15.10",
-    "@types/lusca": "^1.5.0"
+    "@types/lusca": "^1.5.0",
+    "@types/passport": "^0.4.6"
   }
 }

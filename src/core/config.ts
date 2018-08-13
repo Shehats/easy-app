@@ -1,3 +1,5 @@
+import { Strategy } from 'passport';
+
 export interface Config {}
 
 export abstract class PropertyConfigurer {
@@ -15,6 +17,15 @@ export abstract class PropertyConfigurer {
   }
 }
 
+export abstract class BaseController <T> {
+}
+
+export interface PassportConfig {
+  strategy: (new(...args:any[])=>Strategy),
+  params: any,
+  name: string
+}
+
 export interface Routes {
   getUrl?: string,
   getByIdUrl?: string,
@@ -22,5 +33,8 @@ export interface Routes {
   postUrl?: string,
   putUrl?: string,
   deleteUrl?: string,
-  queryUrl?: string
+  queryUrl?: string,
+  registerUrl?: string,
+  loginUrl?: string,
+  logoutUrl?: string
 }
