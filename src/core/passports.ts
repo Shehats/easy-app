@@ -1,18 +1,20 @@
 import { Routes, PassportConfig, comparePassword } from '../core';
 import { initialize, session, serializeUser, deserializeUser, use } from 'passport';
-import { Connection, FindConditions } from "typeorm";
+import { Connection, FindConditions, Repository } from "typeorm";
+import { from } from 'rxjs';
+import { mergeMap, map } from 'rxjs/operators';
 
 export class passportConfigurer <T> {
   private _connection: Promise<Connection>;
   private _type: (new(...args:any[])=>T);
-  private _localparam: string;
+  private _localparam: string | string[];
   private _facebookParam: string;
   private _passwordField: string;
   private _facebookCreateMethod: Function;
   private _googleParam: string;
   private _googleCreateMethod: Function;
 
-  public set localparam (param: string) {
+  public set localparam (param: string | string[]) {
     this._localparam = param;
   }
 
@@ -43,12 +45,24 @@ export class passportConfigurer <T> {
   }
 
   public localAuth (username, password, done) {
-    const params = {};
-    params[this._localparam] = username
-    this._connection.then(conn => conn.getRepository(this._type)
-      .findOne(params))
-      .then(data => comparePassword(password, data[this._passwordField], done))
-      .catch(err => done(err, undefined));
+    let local = this._localparam;
+    from(this._connection.then(conn => conn.getRepository(this._type)))
+    .pipe(mergeMap((rep: Repository<T>) => {
+      local.map(x => {
+        let params = {};
+        params[x] = username;
+        from(rep.findOne(params));
+      })
+      return local;
+    })).pipe(map((user: T) => user))
+    .subscribe((user: T) => {
+      if (user)
+        comparePassword(password, user[this._passwordField], done);
+      else
+        done(new Error('User not found'), user);
+    },
+      err => done(err, undefined)
+    );
   }
 
   public facebookAuth (req: any, accessToken, 

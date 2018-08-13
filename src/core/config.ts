@@ -17,12 +17,12 @@ export abstract class PropertyConfigurer {
   }
 }
 
-export abstract class BaseController <T> {
-}
-
 export interface PassportConfig {
   strategy: (new(...args:any[])=>Strategy),
   params: any,
+  keys: string|string[],
+  hookFunc?: Function,
+  createFunc: Function,
   name: string
 }
 
