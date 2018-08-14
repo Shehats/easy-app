@@ -1,6 +1,12 @@
 # easy-app
 ##### An npm package that makes life easier by providing an opinionated approach of web applications in ts-node much like Springboot in Java
 
+#### To install the package:
+
+#### npm install -S easy-app-js
+#### Or
+#### yarn add easy-app-js
+
 ##### Currently the package is using TypeOrm, but there is a road map of supporting other Orms.
 
 #### @EasyApp decorator:
