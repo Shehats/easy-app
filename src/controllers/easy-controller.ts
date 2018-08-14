@@ -14,7 +14,8 @@ export const EasyController = <T extends {new(...args:any[]):{}}>(routes?: Route
                       getByKeyUrl: target.name.toLowerCase(),
                       postUrl: target.name.toLowerCase(),
                       putUrl: target.name.toLowerCase(),
-                      deleteUrl: target.name.toLowerCase()
+                      deleteUrl: target.name.toLowerCase(),
+                      queryUrl: target.name.toLowerCase()
                     }
   // init controllers
   let queries = <any[]>((is('Models'))? is('Models'): [])

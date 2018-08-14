@@ -9,8 +9,8 @@ export {
 export { 
      EasyController, 
      AuthController,
+     EasyAuthController,
      CustomController,
 		 Get, Post, Put,
 		 Delete, Patch, 
      PasswordField } from './controllers';
-     

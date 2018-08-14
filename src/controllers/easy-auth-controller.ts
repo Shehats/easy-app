@@ -16,6 +16,7 @@ export const EasyAuthController = <T extends {new(...args:any[]):{}}>(strategies
                       postUrl: target.name.toLowerCase(),
                       putUrl: target.name.toLowerCase(),
                       deleteUrl: target.name.toLowerCase(),
+                      queryUrl: target.name.toLowerCase(),
                       loginUrl: 'login',
                       registerUrl: 'register'
                     } 
