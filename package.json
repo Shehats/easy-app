@@ -1,6 +1,6 @@
 {
-  "name": "easy-app",
-  "version": "0.0.1",
+  "name": "easy-app-js",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shehats/easy-app.git"
+    "url": "git+https://github.com/Shehats/easy-app-js.git"
   },
   "author": "saleh shehata",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Shehats/easy-app/issues"
+    "url": "https://github.com/Shehats/easy-app-js/issues"
   },
-  "homepage": "https://github.com/Shehats/easy-app#readme",
+  "homepage": "https://github.com/Shehats/easy-app-js#readme",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
