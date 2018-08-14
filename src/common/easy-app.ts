@@ -40,11 +40,27 @@ export const EasyApp = <T extends {new(...args:any[]):{}}>(
   let putQueue = <any[]>is('PUT_QUEUE');
   let deleteQueue = <any[]>is('DELETE_QUEUE');
   let patchQueue = <any[]>is('PATCH_QUEUE');
-  getQueue.forEach(x => app.App.get(x['url'], x['func']));
-  postQueue.forEach(x => app.App.get(x['url'], x['func']));
-  putQueue.forEach(x => app.App.get(x['url'], x['func']));
-  deleteQueue.forEach(x => app.App.get(x['url'], x['func']));
-  patchQueue.forEach(x => app.App.get(x['url'], x['func']));
+  getQueue.forEach(x => {
+    let base = <string>is(x['parent']);
+    console.log((base)? base+x['url']: x['url'])
+    app.App.get((base)? base+x['url']: x['url'], x['func'])
+  });
+  postQueue.forEach(x => {
+    let base = <string>is(x['parent']);
+    app.App.post((base)? base+x['url']: x['url'], x['func'])
+  });
+  putQueue.forEach(x => {
+    let base = <string>is(x['parent']);
+    app.App.put((base)? base+x['url']: x['url'], x['func'])
+  });
+  deleteQueue.forEach(x => {
+    let base = <string>is(x['parent']);
+    app.App.delete((base)? base+x['url']: x['url'], x['func'])
+  });
+  patchQueue.forEach(x => {
+    let base = <string>is(x['parent']);
+    app.App.patch((base)? base+x['url']: x['url'], x['func'])
+  });
 }
 
 export const getApp = () => (<Express>is('App'));
