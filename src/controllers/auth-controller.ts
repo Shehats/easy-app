@@ -35,6 +35,7 @@ export class AuthController<T> extends Controller<T>{
       defined[x.name] = x.params;
       if (x.name == 'local') {
         passport.localparam = x.keys;
+        passport.passwordField = is(type.name.toUpperCase()+'_PASSWORD');
         use(new x.strategy(x.params, 
           (username, password, done) => 
           passport.localAuth(username, password, done)));        

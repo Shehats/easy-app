@@ -3,6 +3,7 @@ import { Controller, AuthController } from '../controllers';
 import { App } from './'
 import { Routes, AppConfig } from '../config';
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
+import { Express } from 'express';
 
 export const EasyApp = <T extends {new(...args:any[]):{}}>(
   config: AppConfig) => function(target: T): any {
@@ -46,5 +47,5 @@ export const EasyApp = <T extends {new(...args:any[]):{}}>(
   patchQueue.forEach(x => app.App.get(x['url'], x['func']));
 }
 
-export const getApp = () => is('App');
-
+export const getApp = () => (<Express>is('App'));
+export const Use  = (middleware: any) => (<Express>is('App')).use(middleware);
