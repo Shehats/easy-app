@@ -38,7 +38,6 @@ export class Controller<T> {
 
     app.get(`/${routes.queryUrl}=:elem`, (req: Request, res: Response, next: NextFunction) => {
       let params: any = (<any>{})
-
       (<string>req.params.search)
       .split('+').forEach(x => {
         let cur = x.split('=')

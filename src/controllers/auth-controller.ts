@@ -34,14 +34,19 @@ export class AuthController<T> extends Controller<T>{
     stategies.forEach(x => {
       defined[x.name] = x.params;
       if (x.name == 'local') {
+        passport.localparam = x.keys;
         use(new x.strategy(x.params, 
           (username, password, done) => 
           passport.localAuth(username, password, done)));        
       } else if (x.name == 'facebook') {
+        passport.facebookParam = <string>x.keys;
+        passport.facebookCreateMethod = x.createFunc;
         use(new x.strategy(x.params, 
           (req: any, accessToken, refreshToken, profile, done) => 
           passport.facebookAuth(req, accessToken, refreshToken, profile, done)));
       } else if (x.name == 'google') {
+        passport.googleParam = <string>x.keys;
+        passport.googleCreateMethod = x.createFunc;
         use(new x.strategy(x.params, (req: any, accessToken, refreshToken, profile, done) =>
           passport.googleAuth(req, accessToken, refreshToken, profile, done)))
       }

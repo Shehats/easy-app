@@ -1,5 +1,5 @@
 import { createConnection, ConnectionOptions, Connection } from "typeorm";
-import { Controller } from '../controllers';
+import { Controller, AuthController } from '../controllers';
 import { App, AppConfig } from './'
 import { Routes } from '../core';
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
@@ -22,10 +22,16 @@ export const EasyApp = <T extends {new(...args:any[]):{}}>(
   }))
   let connection = (<Promise<Connection>>getConnection())
   Easily('Connection', connection)
-  let queue = <any[]>is('Queue')
+  let queue = <any[]>is('Queue');
+  let authQueue = <any[]>is('AuthQueue');
+  if (authQueue) {
+    authQueue.forEach(x => {
+      Easily(target.name+'_Controller', new AuthController(app.App, x['routes'], connection, x['target'], x['config']));
+    })
+  }
   if (queue) {
     queue.forEach(x => {
-      Easily(target.name+'_Controller', new Controller(app.App, x['routes'], connection, x['target']))
+      Easily(target.name+'_Controller', new Controller(app.App, x['routes'], connection, x['target']));
     })
   }
 }

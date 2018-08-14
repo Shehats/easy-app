@@ -45,7 +45,7 @@ export class passportConfigurer <T> {
   }
 
   public localAuth (username, password, done) {
-    let local = this._localparam;
+    let local = <string[]>this._localparam;
     from(this._connection.then(conn => conn.getRepository(this._type)))
     .pipe(mergeMap((rep: Repository<T>) => {
       local.map(x => {
@@ -69,37 +69,37 @@ export class passportConfigurer <T> {
     refreshToken, profile, done) {
     const params = {};
     params[this._facebookParam] = profile.id;
-    this._connection.then(conn => conn.getRepository(this._type)
-    .findOne(params))
-    .then(user => {
-      if (user) {
-        this._facebookCreateMethod(user);
-        done(undefined, user);
-      }
-      const data = new this._type();
-      this._facebookCreateMethod(data);
-      this._connection.then(conn => conn.getRepository(this._type).save(<any>data))
-      .then(() => done(undefined, data))
-      .catch(err => done(err, data));
-    })
+    from(this._connection.then(conn => conn.getRepository(this._type)
+    .findOne(params))).subscribe(
+      user => {
+        if (user) {
+          this._facebookCreateMethod(user);
+          done(undefined, user);
+        }
+        const data = new this._type();
+        this._facebookCreateMethod(data);
+        this._connection.then(conn => conn.getRepository(this._type).save(<any>data))
+        .then(() => done(undefined, data))
+        .catch(err => done(err, data));
+      });
   }
 
   public googleAuth (req: any, accessToken, 
     refreshToken, profile, done) {
     const params = {};
     params[this._googleParam] = profile.id;
-    this._connection.then(conn => conn.getRepository(this._type)
-    .findOne(params))
-    .then(user => {
-      if (user) {
-        this._googleCreateMethod(user);
-        done(undefined, user);
-      }
-      const data = new this._type();
-      this._googleCreateMethod(data);
-      this._connection.then(conn => conn.getRepository(this._type).save(<any>data))
-      .then(() => done(undefined, data))
-      .catch(err => done(err, data));
-    })
+    from(this._connection.then(conn => conn.getRepository(this._type)
+    .findOne(params))).subscribe(
+      user => {
+        if (user) {
+          this._googleCreateMethod(user);
+          done(undefined, user);
+        }
+        const data = new this._type();
+        this._googleCreateMethod(data);
+        this._connection.then(conn => conn.getRepository(this._type).save(<any>data))
+        .then(() => done(undefined, data))
+        .catch(err => done(err, data));
+      });
   }
 }
