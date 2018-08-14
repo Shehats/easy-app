@@ -1,7 +1,7 @@
 import { createConnection, ConnectionOptions, Connection } from "typeorm";
 import { Controller, AuthController } from '../controllers';
-import { App, AppConfig } from './'
-import { Routes } from '../core';
+import { App } from './'
+import { Routes, AppConfig } from '../config';
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 
 export const EasyApp = <T extends {new(...args:any[]):{}}>(
@@ -34,5 +34,17 @@ export const EasyApp = <T extends {new(...args:any[]):{}}>(
       Easily(target.name+'_Controller', new Controller(app.App, x['routes'], connection, x['target']));
     })
   }
+  let getQueue = <any[]>is('GET_QUEUE');
+  let postQueue = <any[]>is('POST_QUEUE');
+  let putQueue = <any[]>is('PUT_QUEUE');
+  let deleteQueue = <any[]>is('DELETE_QUEUE');
+  let patchQueue = <any[]>is('PATCH_QUEUE');
+  getQueue.forEach(x => app.App.get(x['url'], x['func']));
+  postQueue.forEach(x => app.App.get(x['url'], x['func']));
+  putQueue.forEach(x => app.App.get(x['url'], x['func']));
+  deleteQueue.forEach(x => app.App.get(x['url'], x['func']));
+  patchQueue.forEach(x => app.App.get(x['url'], x['func']));
 }
+
+export const getApp = () => is('App');
 

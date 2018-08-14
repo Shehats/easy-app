@@ -1,11 +1,4 @@
 export {
-  Config,
-  PropertyConfigurer,
-  Routes,
-  PassportConfig
-} from './config';
-
-export {
   constructType,
   configReader
 } from './helpers';

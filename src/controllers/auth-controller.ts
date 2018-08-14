@@ -3,8 +3,8 @@ import { Response, Request, NextFunction, Express, Router } from "express";
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { Connection, FindConditions } from "typeorm";
 import { Observable, from } from 'rxjs';
-import { Routes, PassportConfig, comparePassword, 
-         passportConfigurer, constructType } from '../core';
+import { comparePassword, constructType, passportConfigurer } from '../core';
+import { Routes, PassportConfig } from '../config';
 import { initialize, session, serializeUser, deserializeUser, 
         use, authenticate } from 'passport';
 import * as _ from 'lodash';

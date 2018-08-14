@@ -2,7 +2,9 @@ import { Response, Request, NextFunction, Express, Router } from "express";
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { Connection, FindConditions } from "typeorm";
 import { Observable, from } from 'rxjs';
-import { constructType, Routes } from '../core';
+import { constructType } from '../core';
+import { Routes } from '../config';
+
 
 export class Controller<T> {
   constructor (app: Express, 

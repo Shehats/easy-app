@@ -1,5 +1,5 @@
 import * as PropertiesReader from 'properties-reader';
-import { Config, PropertyConfigurer } from './config';
+import { Config, PropertyConfigurer } from '../config';
 
 export const constructType = <T>(data: Object, type: (new(...args:any[])=>T)): T => {
   const retVal: T = new type();

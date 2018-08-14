@@ -1,4 +1,5 @@
-import { Routes, PassportConfig, comparePassword } from '../core';
+import { comparePassword } from '../core';
+import { Routes, PassportConfig } from '../config';
 import { initialize, session, serializeUser, deserializeUser, use } from 'passport';
 import { Connection, FindConditions, Repository } from "typeorm";
 import { from } from 'rxjs';

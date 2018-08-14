@@ -1,11 +1,11 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { AuthController } from './auth-controller';
-import { Routes } from '../core';
 import { Express, Router } from "express";
 import { Connection } from "typeorm";
-import { PassportConfig } from '../core';
+import { PassportConfig, Routes} from '../config';
 
-export const EasyAuthController = <T extends {new(...args:any[]):{}}>(strategiesConfig: string|PassportConfig[], useRoutes?: boolean, routes?: Routes) => function(target: T): any {
+export const EasyAuthController = <T extends {new(...args:any[]):{}}>(strategiesConfig: PassportConfig[]
+  , routes?: Routes) => function(target: T): any {
   let connection: Promise<Connection> = <Promise<Connection>>is('Connection')
   const targetRoutes: Routes = (routes) 
                     ? routes
@@ -15,26 +15,26 @@ export const EasyAuthController = <T extends {new(...args:any[]):{}}>(strategies
                       getByKeyUrl: target.name.toLowerCase(),
                       postUrl: target.name.toLowerCase(),
                       putUrl: target.name.toLowerCase(),
-                      deleteUrl: target.name.toLowerCase()
-                    }
-  let curConfig: PassportConfig[] = []
-  if (typeof strategiesConfig === "string") {}
+                      deleteUrl: target.name.toLowerCase(),
+                      loginUrl: 'login',
+                      registerUrl: 'register'
+                    } 
   // init controllers
-  let queries = <any[]>((is('Models'))? is('Models'): [])
-  queries.push(target)
-  Easily('Models', queries)
-  Easily(target.name.toLowerCase()+'_MODEL',target)
-  let app: Express = <Express> is('App')
+  let queries = <any[]>((is('Models'))? is('Models'): []);
+  queries.push(target);
+  Easily('Models', queries);
+  Easily(target.name.toLowerCase()+'_MODEL',target);
+  let app: Express = <Express> is('App');
   if (!app){
-    let queue = <any[]>is('AuthQueue')
+    let queue = <any[]>is('AuthQueue');
     if (!queue)
-      Easily('AuthQueue',[{routes: targetRoutes, target: target, config: curConfig}])
+      Easily('AuthQueue',[{routes: targetRoutes, target: target, config: strategiesConfig}]);
     else {
-      queue.push({routes: targetRoutes, target: target, config: curConfig})
-      Easily('AuthQueue', queue)
+      queue.push({routes: targetRoutes, target: target, config: strategiesConfig});
+      Easily('AuthQueue', queue);
     }
   } else {
-    const targetController = new AuthController(app, targetRoutes, connection, target, curConfig);
+    const targetController = new AuthController(app, targetRoutes, connection, target, strategiesConfig);
     Easily(target.name+'_Controller', targetController);
   }
 }

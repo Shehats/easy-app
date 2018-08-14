@@ -1,8 +1,8 @@
+export { EasyApp } from './common';
 export { 
-	EasyApp, 
-	AppConfig } from './common';
-export { 
+	AppConfig,
 	Routes, 
 	Config, 
-	PropertyConfigurer } from './core';
+	PropertyConfigurer } from './config';
+
 export { EasyController } from './controllers';

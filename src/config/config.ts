@@ -1,5 +1,3 @@
-import { Strategy } from 'passport';
-
 export interface Config {}
 
 export abstract class PropertyConfigurer {
@@ -15,15 +13,6 @@ export abstract class PropertyConfigurer {
   set Config(config: Config) {
     this._config = config;
   }
-}
-
-export interface PassportConfig {
-  strategy: (new(...args:any[])=>Strategy),
-  params: any,
-  keys: string|string[],
-  hookFunc?: Function,
-  createFunc: Function,
-  name: string
 }
 
 export interface Routes {
