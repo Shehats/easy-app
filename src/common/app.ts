@@ -9,8 +9,7 @@ import * as dotenv  from "dotenv";
 import { createConnection, ConnectionOptions, Connection } from "typeorm";
 import { Controller } from '../controllers';
 import { Observable, from, merge } from 'rxjs';
-import { Routes } from '../core';
-import { AppConfig } from './app-config';
+import { AppConfig, Routes } from '../config';
 
 export class App {
   private router: Router

@@ -2,7 +2,9 @@ import { Response, Request, NextFunction, Express, Router } from "express";
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { Connection, FindConditions } from "typeorm";
 import { Observable, from } from 'rxjs';
-import { constructType, Routes } from '../core';
+import { constructType } from '../core';
+import { Routes } from '../config';
+
 
 export class Controller<T> {
   constructor (app: Express, 
@@ -38,7 +40,6 @@ export class Controller<T> {
 
     app.get(`/${routes.queryUrl}=:elem`, (req: Request, res: Response, next: NextFunction) => {
       let params: any = (<any>{})
-
       (<string>req.params.search)
       .split('+').forEach(x => {
         let cur = x.split('=')

@@ -1,10 +1,13 @@
 export {
-  Config,
-  PropertyConfigurer,
-  Routes
-} from './config';
-
-export {
   constructType,
   configReader
 } from './helpers';
+
+export {
+  comparePassword,
+  encrypt
+} from './secure';
+
+export {
+  passportConfigurer
+} from './passports';

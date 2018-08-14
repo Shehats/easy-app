@@ -22,5 +22,8 @@ export interface Routes {
   postUrl?: string,
   putUrl?: string,
   deleteUrl?: string,
-  queryUrl?: string
+  queryUrl?: string,
+  registerUrl?: string,
+  loginUrl?: string,
+  logoutUrl?: string
 }

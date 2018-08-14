@@ -1,6 +1,6 @@
 import { EasySingleton, is, Easily } from 'easy-injectionjs';
 import { Controller } from './base-controller';
-import { Routes } from '../core';
+import { Routes } from '../config';
 import { Express, Router } from "express";
 import { Connection } from "typeorm";
 

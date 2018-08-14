@@ -1,8 +1,16 @@
+export { EasyApp, getApp, Use } from './common';
+
 export { 
-	EasyApp, 
-	AppConfig } from './common';
-export { 
+	AppConfig,
 	Routes, 
 	Config, 
-	PropertyConfigurer } from './core';
-export { EasyController } from './controllers';
+	PropertyConfigurer } from './config';
+
+export { 
+     EasyController, 
+     AuthController,
+     CustomController,
+		 Get, Post, Put,
+		 Delete, Patch, 
+     PasswordField } from './controllers';
+     

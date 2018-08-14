@@ -1,4 +1,4 @@
-import { Config, PropertyConfigurer } from '../core';
+import { Config, PropertyConfigurer } from './config';
 
 export interface AppConfig extends Config {
   port?: number,
